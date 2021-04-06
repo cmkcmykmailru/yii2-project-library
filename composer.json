@@ -1,0 +1,39 @@
+{
+  "name": "grigor/yii2-project-library",
+  "description": "Общие вещи для структуры модулей.",
+  "type": "yii2-extension",
+  "keywords": [
+    "yii2",
+    "extension"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "grigor",
+      "email": "cmk.cmyk@mail.ru"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.4",
+    "yiisoft/yii2": "~2.0.14",
+    "yiisoft/yii2-queue": "^2.0.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "8.5.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "grigor\\library\\": "src"
+    }
+  },
+  "scripts": {
+    "tests": "php ./vendor/bin/phpunit --colors=always tests"
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
+}
