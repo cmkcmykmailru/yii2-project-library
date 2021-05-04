@@ -4,7 +4,7 @@ namespace grigor\library\dispatcher;
 
 use yii\queue\Queue;
 
-class EventDispatcher
+class EventDispatcher implements EventDispatcherInterface
 {
     private array $events;
     private Queue $queue;

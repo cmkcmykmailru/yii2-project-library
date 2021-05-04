@@ -1,6 +1,8 @@
 <?php
 namespace grigor\library;
 
+use grigor\library\contexts\ContractWrapper;
+use grigor\library\contexts\InflateSwitcher;
 use grigor\library\factories\LatSlugFactory;
 use grigor\library\factories\SlugFactoryInterface;
 use grigor\library\repositories\strategies\BaseDeleteStrategy;
@@ -15,8 +17,5 @@ class Bootstrap implements BootstrapInterface
     public function bootstrap($app)
     {
         $container = \Yii::$container;
-        $container->setSingleton(SaveStrategyInterface::class, BaseSaveStrategy::class);
-        $container->setSingleton(DeleteStrategyInterface::class, BaseDeleteStrategy::class);
-        $container->setSingleton(SlugFactoryInterface::class, LatSlugFactory::class);
     }
 }

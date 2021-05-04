@@ -2,42 +2,34 @@
 
 namespace grigor\library\contexts;
 
-use yii\caching\Cache;
-use yii\caching\TagDependency;
+use yii\base\InvalidConfigException;
 
 class Config
 {
-    protected Registry $registry;
     protected string $overridesDir;
+    protected $config;
 
     /**
      * AbstractConfig constructor.
-     * @param $config
+     * @param string $overridesDir
      */
     public function __construct(string $overridesDir)
     {
-        $this->registry = new Registry();
         $this->overridesDir = $overridesDir;
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->config);
     }
 
     public function getContextDirectory(AbstractContract $contract): string
     {
-        $key = get_class($contract) . 'Directory';
-        if ($this->registry->has($key)) {
-            return $this->registry->get($key);
-        }
-        $dir = \dirname((new \ReflectionClass($contract))->getFileName());
-        $this->registry->register($key, $dir);
-        return $dir;
+        return \dirname((new \ReflectionClass($contract))->getFileName());
     }
 
     public function buildConfigsOfContext(AbstractContract $contract, array $paths = []): void
     {
-        $key = get_class($contract) . 'Configs';
-        if ($this->registry->has($key)) {
-            return;
-        }
-
         $dir = $this->getContextDirectory($contract);
         $etcPaths = empty($paths) ? include $dir . '/../etc/config.php' : $paths;
         $overridesPath = $this->overridesDir . '/overrides_config.php';
@@ -56,19 +48,12 @@ class Config
             $config = array_merge($config, $overrides);
         }
 
-
-        $this->registry->register($key, $config);
-        return;
+        $this->config = $config;
     }
 
     public function getDependenciesOfContext(AbstractContract $contract, array $paths = []): array
     {
-        $key = get_class($contract) . 'Dependencies';
-        if ($this->registry->has($key)) {
-            return $this->registry->get($key);
-        }
         $dir = $this->getContextDirectory($contract);
-
 
         $etcPaths = empty($paths) ? include $dir . '/../etc/config.php' : $paths;
         $overridesPath = $this->overridesDir . '/overrides_di.php';
@@ -80,7 +65,6 @@ class Config
             $di['definition'] = array_merge($di['definition'], $overrides['definition']);
         }
 
-        $this->registry->register($key, $di);
         return $di;
     }
 
@@ -106,4 +90,32 @@ class Config
         ];
     }
 
+    public function contains(string $key): bool
+    {
+        if (empty($this->config)) {
+            return false;
+        }
+        return array_key_exists($key, $this->config);
+    }
+
+    public function get(string $key)
+    {
+        if (!$this->contains($key)) {
+            throw new InvalidConfigException('Check configuration.');
+        }
+        return $this->config[$key];
+    }
+
+    public function getKeys(): array
+    {
+        if ($this->isEmpty()) {
+            return [];
+        }
+        return array_keys($this->config);
+    }
+
+    public function clear(): void
+    {
+        $this->config = [];
+    }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace grigor\library\dto;
+namespace grigor\library\commands;
 
-class Meta implements Dto
+class MetaCommand implements Command
 {
     public $title;
     public $description;

@@ -3,8 +3,6 @@
 namespace grigor\library\contexts;
 
 use RuntimeException;
-use Yii;
-use yii\di\Container;
 
 abstract class AbstractContract implements ContractInterface
 {
@@ -24,7 +22,7 @@ abstract class AbstractContract implements ContractInterface
     protected function container(array $etcPaths = []): Container
     {
         if ($this->container === null) {
-            $this->container = Yii::$container;
+            $this->container = new Container();
             $this->config->buildConfigsOfContext($this, $etcPaths);
             $diContext = $this->config->getDependenciesOfContext($this, $etcPaths);
             $this->container->setDefinitions($diContext['definition']);
@@ -35,19 +33,22 @@ abstract class AbstractContract implements ContractInterface
 
     protected function config(array $etcPaths = []): Config
     {
-        $this->config->buildConfigsOfContext($this, $etcPaths);
+        if ($this->config->isEmpty() || !empty($etcPaths)) {
+            $this->config->buildConfigsOfContext($this, $etcPaths);
+        }
         return $this->config;
     }
 
     public function getDefinitionOf(string $className): string
     {
-        $this->container();
-        $definitions = \Yii::$container->getDefinitions();
+        $container = $this->container();
+        $definitions = $container->getDefinitions();
 
-        if (!\Yii::$container->has($className)) {
+        if (!$container->has($className)) {
             throw new RuntimeException('Class ' . $className . ' is not registered correctly.');
         }
 
         return $definitions[$className]['class'];
     }
+
 }

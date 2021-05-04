@@ -2,7 +2,7 @@
 
 namespace grigor\library\forms;
 
-use grigor\library\dto\Meta;
+use grigor\library\commands\MetaCommand;
 use yii\base\Model;
 
 class MetaForm extends Model
@@ -10,7 +10,7 @@ class MetaForm extends Model
     public $title;
     public $description;
 
-    public function __construct(Meta $meta = null, $config = [])
+    public function __construct(MetaCommand $meta = null, $config = [])
     {
         if ($meta) {
             $this->title = $meta->title;

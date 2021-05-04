@@ -2,7 +2,7 @@
 
 namespace grigor\library\behaviors;
 
-use grigor\library\dto\Meta;
+use grigor\library\commands\MetaCommand;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\db\ActiveRecord;
@@ -27,7 +27,7 @@ class MetaBehavior extends Behavior
     {
         $model = $event->sender;
         $meta = Json::decode($model->getAttribute($this->jsonAttribute));
-        $model->{$this->attribute} = new Meta(
+        $model->{$this->attribute} = new MetaCommand(
             ArrayHelper::getValue($meta, 'title'),
             ArrayHelper::getValue($meta, 'description')
         );
